@@ -1,23 +1,18 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
 
-class MessierscraperPipeline:
+class FieldsCleanupPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         brightness = adapter.get("brightness")
         brightness = brightness.strip()
         brightness = brightness.replace("(mag)", "")
+        brightness = brightness.replace(" ", "")
         adapter["brightness"] = brightness
 
         name = adapter.get("name")
         name = name.strip()
+        name = name.replace('"', "")
         adapter["name"] = name
 
         distance = adapter.get("distance")
@@ -35,6 +30,18 @@ class MessierscraperPipeline:
         dimensions = dimensions.rstrip()
         dimensions = dimensions.replace(" (arc min)", "")
         adapter["dimensions"] = dimensions
+
+        ra = adapter.get("right_ascension")
+        ra = ra.rstrip()
+        ra = ra.replace(" (h:m)", "")
+        ra = ra.replace(" ", "")
+        adapter["right_ascension"] = ra
+
+        dec = adapter.get("declination")
+        dec = dec.rstrip()
+        dec = dec.replace(" (deg:m)", "")
+        dec = dec.replace(" ", "")
+        adapter["declination"] = dec
 
         return item
 
