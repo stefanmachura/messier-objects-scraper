@@ -1,3 +1,6 @@
+import csv
+import json
+
 from itemadapter import ItemAdapter
 
 
@@ -58,3 +61,21 @@ class DimensionsNormalizationPipeline:
             adapter["dim_x"] = dimensions
             adapter["dim_y"] = dimensions
         return item
+
+
+class JSONConverterPipeline:
+    def close_spider(self, spider):
+        objects = []
+        with open("objects.csv", "r") as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    line_count += 1
+                    continue
+                obj = {}
+                for k, v in row.items():
+                    obj[k] = v
+                objects.append(obj)
+        with open("objects.json", "w") as json_file:
+            json_file.write(json.dumps(objects, indent=4))

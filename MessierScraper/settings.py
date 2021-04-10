@@ -10,6 +10,7 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     "MessierScraper.pipelines.FieldsCleanupPipeline": 300,
     "MessierScraper.pipelines.DimensionsNormalizationPipeline": 500,
+    "MessierScraper.pipelines.JSONConverterPipeline": 700,
 }
 
 FEED_EXPORTERS = {
